@@ -2,8 +2,7 @@
 title: "Untitled"
 author: "Me"
 date: "14 mai 2017"
-output: html_document
-
+output: rmarkdown::github_document
 ---
 ##Loading and preprocessing the data
 1. Load the data
