@@ -1,8 +1,35 @@
+---
+title: "Untitled"
+author: "Me"
+date: "14 mai 2017"
+output: html_document:
+    keep_md = True
+---
 ##Loading and preprocessing the data
 1. Load the data
 
 ```r
 library(dplyr)
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 library(tidyr) #may need it later
 
 file = read.csv("D:/Cours/Coursera/Reproducible_research/Week2/activity.csv")
@@ -19,6 +46,14 @@ Calculate the total number of steps taken per day
 
 ```r
 library(ggplot2)
+```
+
+```
+## Use suppressPackageStartupMessages() to eliminate package startup
+## messages.
+```
+
+```r
 steps <- data %>% 
     na.omit() %>% #removing the NAs
     group_by(date) %>%
@@ -147,6 +182,20 @@ ggplot(stepsPerDay, aes(date)) +
 ```r
 #indices of days of the weekend
 library(lubridate)
+```
+
+```
+## 
+## Attaching package: 'lubridate'
+```
+
+```
+## The following object is masked from 'package:base':
+## 
+##     date
+```
+
+```r
 filledData2 <- filledData
 
 filledData2$date <- as.Date(filledData2$date) 
