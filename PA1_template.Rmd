@@ -4,7 +4,7 @@
 library(dplyr)
 library(tidyr) #may need it later
 
-file = read.csv("D:/Cours/Coursera/Reproducible research/Week2/activity.csv")
+file = read.csv("D:/Cours/Coursera/Reproducible_research/Week2/activity.csv")
 ```
 2. Transform the data into a format suitable for your analysis
 ```{r}
@@ -125,7 +125,7 @@ ggplot(stepsPerDay, aes(date)) +
 
 ##Are there differences in activity patterns between weekdays and weekends?
 
-1. Create a new factor variable in the dataset with two levels – “weekday” and “weekend”
+1. Create a new factor variable in the dataset with two levels - "weekday" and "weekend"
 ```{r}
 #indices of days of the weekend
 library(lubridate)

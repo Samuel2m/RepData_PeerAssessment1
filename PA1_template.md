@@ -1,33 +1,23 @@
----
-title: "Week 2 Assigment"
-author: "Me"
-date: "13 mai 2017"
-output: html_document:
-    keep_md: true
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-
 ##Loading and preprocessing the data
 1. Load the data
-```{r}
+
+```r
 library(dplyr)
 library(tidyr) #may need it later
 
-file = read.csv("D:/Cours/Coursera/Reproducible research/Week2/activity.csv")
+file = read.csv("D:/Cours/Coursera/Reproducible_research/Week2/activity.csv")
 ```
 2. Transform the data into a format suitable for your analysis
-```{r}
+
+```r
 data = tbl_df(file)
 ```
 
 
 ##What is mean total number of steps taken per day?
 Calculate the total number of steps taken per day
-```{r}
+
+```r
 library(ggplot2)
 steps <- data %>% 
     na.omit() %>% #removing the NAs
@@ -36,7 +26,8 @@ steps <- data %>%
 ```
 
 2. Plotting the histogram
-```{r}
+
+```r
 g <- ggplot(steps, aes(date)) + 
     geom_histogram(bins=53, aes(number_of_steps)) + 
     theme_bw() +
@@ -48,22 +39,27 @@ g <- ggplot(steps, aes(date)) +
 print(g)
 ```
 
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
+
 3.Compute and reporting the mean and the median
-```{r}
+
+```r
 meanSteps = mean(steps$number_of_steps)
 medianSteps = median(steps$number_of_steps)
 g  +
     geom_vline(xintercept = meanSteps, col="red", show.legend = TRUE) +
     geom_vline(xintercept = medianSteps, col = "green", show.legend = TRUE) 
-    
 ```
 
-* Mean = `r meanSteps`
-* Median = `r medianSteps`
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png)
+
+* Mean = 1.0766189 &times; 10<sup>4</sup>
+* Median = 10765
 In my data, the mean and the median are so close that they are not distinct on the graph, for some reason won't display the labels on the graph
 
 ##What is the average daily activity pattern?
-```{r}
+
+```r
 stepsbyinterval <- data %>%
     na.omit() %>%
     group_by(interval) %>%
@@ -71,7 +67,8 @@ stepsbyinterval <- data %>%
 ```
 
 1. Time series plot
-```{r}
+
+```r
 ggplot(stepsbyinterval, aes(x=interval, y=number_of_steps)) +
     geom_line() +
     theme_bw() + 
@@ -81,22 +78,27 @@ ggplot(stepsbyinterval, aes(x=interval, y=number_of_steps)) +
     ylab("average number of steps taken") 
 ```
 
+![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png)
+
 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
-```{r}
+
+```r
 maxSteps <- stepsbyinterval[which.max(stepsbyinterval$number_of_steps), 1]
 ```
-The interval number **`r maxSteps`** contains the maximum number of steps
+The interval number **835** contains the maximum number of steps
 
 
 ##Imputing missing values
 1.Calculate and report the total number of missing values in the dataset
-```{r}
+
+```r
 sumNAs = sum(is.na(data))
 ```
-There are `r sumNAs` missing values in the dataset.
+There are 2304 missing values in the dataset.
 
 2. and 3. Filling in all of the missing values in the dataset
-```{r}
+
+```r
 #filling NAs with the mean of the interval
 impute.mean <- function(x) replace(x, is.na(x), mean(x, na.rm = TRUE))
 filledData <- data %>%
@@ -108,22 +110,22 @@ The strategy used to fill the missing values is using the mean for each interval
 
 
 4.
-```{r}
 
+```r
 stepsPerDay <- filledData %>%
     group_by(date) %>%
     summarise("number_of_steps" = sum(steps))
     
 meanStepsFilled <- mean(stepsPerDay$number_of_steps)
 medianStepsFilled <- median(stepsPerDay$number_of_steps)
-    
 ```
-* Mean = `r meanStepsFilled`
-* Median = `r medianStepsFilled`
+* Mean = 1.0766189 &times; 10<sup>4</sup>
+* Median = 1.0766189 &times; 10<sup>4</sup>
 
 Since we imputed the missing values with the means / interval, the overall mean is still the same.
 
-```{r}
+
+```r
 ggplot(stepsPerDay, aes(date)) + 
     geom_histogram(bins=61, aes(number_of_steps)) + 
     theme_bw() +
@@ -135,11 +137,14 @@ ggplot(stepsPerDay, aes(date)) +
     geom_vline(xintercept = medianStepsFilled, col = "green", show.legend = TRUE) 
 ```
 
+![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12-1.png)
+
 
 ##Are there differences in activity patterns between weekdays and weekends?
 
-1. Create a new factor variable in the dataset with two levels – “weekday” and “weekend”
-```{r}
+1. Create a new factor variable in the dataset with two levels - "weekday" and "weekend"
+
+```r
 #indices of days of the weekend
 library(lubridate)
 filledData2 <- filledData
@@ -147,11 +152,10 @@ filledData2 <- filledData
 filledData2$date <- as.Date(filledData2$date) 
 filledData2$day = ifelse(wday(filledData2$date-1) <6, "weekday", "weekend")
 filledData2$day = as.factor(filledData2$day)
-
 ```
 2. Time series plot
-```{r}
 
+```r
 filledData2 <- filledData2 %>%
     group_by(day, interval) %>%
     summarize(meanSteps = mean(steps))
@@ -161,5 +165,7 @@ ggplot(filledData2, aes(x=interval, y=meanSteps)) + geom_line() + facet_grid(day
     theme(plot.title = element_text(hjust = 0.5)) + 
     theme_bw()
 ```
+
+![plot of chunk unnamed-chunk-14](figure/unnamed-chunk-14-1.png)
 
 As we can see, there is much less activity during the weekend.
